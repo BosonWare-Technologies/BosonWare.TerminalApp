@@ -22,7 +22,7 @@
       </RepositoryUrl>
 
       <PackageReleaseNotes>
-      
+      Initial release of BosonWare.TerminalApp with built-in commands and project structure.
       </PackageReleaseNotes>
   </PropertyGroup>
 
