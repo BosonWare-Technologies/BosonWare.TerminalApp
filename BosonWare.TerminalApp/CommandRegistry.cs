@@ -1,27 +1,29 @@
-﻿using BosonWare.TUI;
+﻿using BosonWare.Compares;
+using BosonWare.TUI;
 using System.Reflection;
 
 namespace BosonWare.TerminalApp;
 
+/// <summary>
+/// Provides a registry for commands, allowing registration and retrieval of <see cref="ICommand"/> instances
+/// by their names or aliases. Supports case-insensitive command name matching.
+/// </summary>
 public static class CommandRegistry
 {
-    private sealed class EqualityComparer : IEqualityComparer<string>
-    {
-        bool IEqualityComparer<string>.Equals(string? x, string? y)
-        {
-            if (x is null && y is null) return true;
-
-            if (x is null || y is null) return false;
-
-            return x.Equals(y, StringComparison.OrdinalIgnoreCase);
-        }
-
-        int IEqualityComparer<string>.GetHashCode(string obj) => obj.GetHashCode(StringComparison.OrdinalIgnoreCase);
-    }
-
     public static Dictionary<string, (ICommand Command, CommandAttribute Attribute)> Commands { get; } 
-        = new(new EqualityComparer());
+        = new(new OrdinalIgnoreCaseEqualityComparer());
 
+    /// <summary>
+    /// Loads command types from the specified assemblies and registers them in the <c>Commands</c> dictionary.
+    /// Each command type must be decorated with a <see cref="CommandAttribute"/> and implement <see cref="ICommand"/>.
+    /// The method also registers command aliases defined in the <see cref="CommandAttribute"/>.
+    /// </summary>
+    /// <typeparam name="AssemblyMarker">
+    /// A marker type used to identify the primary assembly to scan for command types.
+    /// </typeparam>
+    /// <param name="assemblyMarkers">
+    /// An array of marker types whose assemblies will also be scanned for command types.
+    /// </param>
     public static void LoadCommands<AssemblyMarker>(params Type[] assemblyMarkers)
     {
         var types = typeof(AssemblyMarker).Assembly

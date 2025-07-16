@@ -1,3 +1,6 @@
+using BosonWare.TUI;
+using CommandLine;
+
 namespace BosonWare.TerminalApp;
 
 /// <summary>
@@ -6,16 +9,16 @@ namespace BosonWare.TerminalApp;
 /// <param name="name">The name of the command.</param>
 /// <param name="description">The description of the command.</param>
 /// <param name="execute">The action to execute when the command is invoked, accepting a string argument.</param>
-public sealed class MinimalCommand(
-    string name, 
-    string description, 
-    Action<string> execute) : IMinimalCommand
+public sealed class MinimalCommand<TOptions>(
+        string name,
+        string description,
+        Action<TOptions> execute) : IMinimalCommand
 {
     public string Name { get; init; } = name ?? throw new ArgumentNullException(nameof(name));
 
     public string Description { get; private set; } = description ?? throw new ArgumentNullException(nameof(description));
 
-    public Action<string> Execute { get; init; } = execute ?? throw new ArgumentNullException(nameof(execute));
+    public Action<TOptions> Execute { get; init; } = execute ?? throw new ArgumentNullException(nameof(execute));
 
     /// <summary>
     /// Sets the description for the <see cref="MinimalCommand"/> instance.
@@ -29,12 +32,29 @@ public sealed class MinimalCommand(
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="description"/> is <c>null</c>.
     /// </exception>
-    public MinimalCommand AddDescription(string description)
+    public MinimalCommand<TOptions> AddDescription(string description)
     {
         Description = description ?? throw new ArgumentNullException(nameof(description));
 
         return this;
     }
 
-    Task ICommand.Execute(string arguments) => Task.Run(() => Execute(arguments));
+    Task ICommand.Execute(string arguments)
+    {
+        var args = CommandLineParser.SplitCommandLine(arguments);
+
+        var options = Parser.Default.ParseArguments<TOptions>(args);
+
+        if (options.Errors.Any()) {
+            if (!arguments.Contains("--help", StringComparison.InvariantCultureIgnoreCase)) {
+                SmartConsole.LogError("Invalid command arguments. Please check the command syntax.");
+            }
+
+            return Task.CompletedTask;
+        }
+
+        var parsedOptions = options.Value;
+
+        return Task.Run(() => Execute(parsedOptions));
+    }
 }

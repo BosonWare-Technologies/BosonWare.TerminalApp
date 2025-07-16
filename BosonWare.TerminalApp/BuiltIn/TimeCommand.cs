@@ -3,6 +3,12 @@ using CommandLine;
 
 namespace BosonWare.TerminalApp.BuiltIn;
 
+/// <summary>
+/// Represents a command that displays the current local or UTC time in the terminal.
+/// </summary>
+/// <remarks>
+/// The <c>TimeCommand</c> provides an option to display the time in UTC format.
+/// </remarks>
 [Command("time", Description = "Displays the current local time.")]
 public sealed class TimeCommand : Command<TimeCommand.Options>
 {

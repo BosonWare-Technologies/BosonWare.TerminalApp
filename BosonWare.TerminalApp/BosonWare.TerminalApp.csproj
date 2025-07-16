@@ -9,7 +9,7 @@
     	<Authors>Realtin (CodingBoson)</Authors>
 	    <Company>BosonWare, Technologies</Company>
 
-      <Version>1.0.0</Version>
+      <Version>1.1.0</Version>
       <Copyright>BosonWare, Technologies</Copyright>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
       <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -22,7 +22,16 @@
       </RepositoryUrl>
 
       <PackageReleaseNotes>
-      Initial release of BosonWare.TerminalApp with built-in commands and project structure.
+      Adds minimal command support with fluent configuration
+
+      Introduces a simplified command registration system allowing for quick command setup with  lambda expressions. This enhances developer experience by:
+
+        - Adding a MinimalCommand class for lightweight command definitions
+        - Implementing a fluent API for command configuration
+        - Supporting both registry-based and minimal commands simultaneously
+        - Making the ConsoleApplication instance accessible via static Current property
+
+      Commands can now be added directly using AddCommand() with an action delegate, reducing  boilerplate compared to implementing full ICommand interfaces.
       </PackageReleaseNotes>
   </PropertyGroup>
 
@@ -33,6 +42,12 @@
 
   <ItemGroup>
       <None Include="../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\README.md">
+      <Link>README.md</Link>
+    </Content>
   </ItemGroup>
 
 </Project>
