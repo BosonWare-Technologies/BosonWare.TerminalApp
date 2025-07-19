@@ -9,8 +9,6 @@ public sealed class ExitCommand : ICommand
     {
         SmartConsole.WriteLine("Exiting application...", ConsoleColor.Yellow);
 
-        await Task.Delay(500);
-
-        Environment.Exit(0);
+        ConsoleApplication.Current.Exit();
     }
 }

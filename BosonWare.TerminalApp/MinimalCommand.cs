@@ -9,13 +9,13 @@ namespace BosonWare.TerminalApp;
 public sealed class MinimalCommand(
     string name, 
     string description, 
-    Action<string> execute) : IMinimalCommand
+    Func<string, Task> execute) : IMinimalCommand
 {
     public string Name { get; init; } = name ?? throw new ArgumentNullException(nameof(name));
 
     public string Description { get; private set; } = description ?? throw new ArgumentNullException(nameof(description));
 
-    public Action<string> Execute { get; init; } = execute ?? throw new ArgumentNullException(nameof(execute));
+    public Func<string, Task> Execute { get; init; } = execute ?? throw new ArgumentNullException(nameof(execute));
 
     /// <summary>
     /// Sets the description for the <see cref="MinimalCommand"/> instance.
@@ -36,5 +36,5 @@ public sealed class MinimalCommand(
         return this;
     }
 
-    Task ICommand.Execute(string arguments) => Task.Run(() => Execute(arguments));
+    Task ICommand.Execute(string arguments) => Execute(arguments);
 }

@@ -33,9 +33,11 @@ public sealed class ConsoleApplication
     /// <summary>
     /// Gets or sets the prompt string displayed to the user.
     /// </summary>
-
     public string Prompt { get; set; } = "";
 
+    /// <summary>
+    /// Indicates whether the application is currently running.
+    /// </summary>
     public bool IsRunning => _isRunning;
 
     /// <summary>
@@ -53,7 +55,12 @@ public sealed class ConsoleApplication
 
         Current = this;
     }
-
+    
+    public void Exit()
+    {
+        _isRunning = false;
+    }
+    
     /// <summary>
     /// Adds a minimal command with the specified name, action, and optional description.
     /// </summary>
@@ -61,7 +68,10 @@ public sealed class ConsoleApplication
     /// <param name="action">The action to execute when the command is invoked.</param>
     /// <param name="description">The description of the command.</param>
     /// <returns>The created <see cref="MinimalCommand"/> instance.</returns>
-    public MinimalCommand AddCommand(string name, Action<string> action, string description = "")
+    public MinimalCommand AddCommand(
+        string name, 
+        Func<string, Task> action, 
+        string description = "")
     {
         var command = new MinimalCommand(name, description, action);
 
@@ -71,6 +81,28 @@ public sealed class ConsoleApplication
     }
 
     /// <summary>
+    /// Adds a minimal command with the specified name, action, and optional description.
+    /// </summary>
+    /// <param name="name">The name of the command.</param>
+    /// <param name="action">The action to execute when the command is invoked.</param>
+    /// <param name="description">The description of the command.</param>
+    /// <returns>The created <see cref="MinimalCommand"/> instance.</returns>
+    public MinimalCommand AddCommand(
+        string name, 
+        Action<string> action, 
+        string description = "")
+    {
+        var command = new MinimalCommand(name, description, (args) => {
+            return Task.Run(() => action(args));
+        });
+
+        _commands.Add(name, command);
+
+        return command;
+    }
+
+    
+    /// <summary>
     /// Adds a minimal command with options, specifying the name, action, and optional description.
     /// </summary>
     /// <typeparam name="TOptions">The type of options for the command.</typeparam>
@@ -78,9 +110,36 @@ public sealed class ConsoleApplication
     /// <param name="action">The action to execute when the command is invoked.</param>
     /// <param name="description">The description of the command.</param>
     /// <returns>The created <see cref="MinimalCommand{TOptions}"/> instance.</returns>
-    public MinimalCommand<TOptions> AddCommand<TOptions>(string name, Action<TOptions> action, string description = "")
+    public MinimalCommand<TOptions> AddCommand<TOptions>(
+        string name, 
+        Func<TOptions, Task> action, 
+        string description = "")
     {
         var command = new MinimalCommand<TOptions>(name, description, action);
+
+        _commands.Add(name, command);
+
+        return command;
+    }
+
+    
+    /// <summary>
+    /// Adds a minimal command with options, specifying the name, action, and optional description.
+    /// </summary>
+    /// <typeparam name="TOptions">The type of options for the command.</typeparam>
+    /// <param name="name">The name of the command.</param>
+    /// <param name="action">The action to execute when the command is invoked.</param>
+    /// <param name="description">The description of the command.</param>
+    /// <returns>The created <see cref="MinimalCommand{TOptions}"/> instance.</returns>
+    public MinimalCommand<TOptions> AddCommand<TOptions>(
+        string name, 
+        Action<TOptions> action, 
+        string description = "")
+    {
+        var command = new MinimalCommand<TOptions>(
+            name, 
+            description, 
+            args => Task.Run(() => action(args)));
 
         _commands.Add(name, command);
 
@@ -94,13 +153,12 @@ public sealed class ConsoleApplication
     /// <param name="e">The event arguments.</param>
     private void HandleCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
     {
+        e.Cancel = true; // Prevent the application from terminating.
+        
         if (TerminationMode.HasFlag(TerminationMode.TerminateOnCtrlC)) {
             _isRunning = false;
-
-            e.Cancel = false; // Allow the application to terminate.
         }
         else {
-            e.Cancel = true; // Prevent the application from terminating.
             SmartConsole.LogWarning("Application will not terminate on Ctrl+C. Use 'exit' command to quit.");
         }
     }
