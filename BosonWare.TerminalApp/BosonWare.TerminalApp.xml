@@ -1,0 +1,271 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BosonWare.TerminalApp</name>
+    </assembly>
+    <members>
+        <member name="M:BosonWare.TerminalApp.BuiltIn.HelpCommand.Execute(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:BosonWare.TerminalApp.BuiltIn.TimeCommand">
+            <summary>
+                Represents a command that displays the current local or UTC time in the terminal.
+            </summary>
+            <remarks>
+                The <c>TimeCommand</c> provides an option to display the time in UTC format.
+            </remarks>
+        </member>
+        <member name="T:BosonWare.TerminalApp.BuiltIn.VersionCommand">
+            <summary>
+                Represents a command that displays the current application version in the terminal.
+            </summary>
+            <remarks>
+                This command can be invoked using "version" or its alias "ver".
+            </remarks>
+        </member>
+        <member name="T:BosonWare.TerminalApp.Command`1">
+            <summary>
+                Represents an abstract base class for commands with typed options.
+            </summary>
+            <typeparam name="TOptions">The type of options to be parsed and passed to the command.</typeparam>
+        </member>
+        <member name="M:BosonWare.TerminalApp.Command`1.Execute(System.String)">
+            <summary>
+                Executes the command with the specified argument string.
+                Parses the arguments, validates them, and invokes the command logic asynchronously.
+                Logs an error if the arguments are invalid and help is not requested.
+            </summary>
+            <param name="arguments">A string containing the command-line arguments to be parsed and executed.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:BosonWare.TerminalApp.CommandGroup.Execute(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:BosonWare.TerminalApp.CommandRegistry">
+            <summary>
+                Provides a registry for commands, allowing registration and retrieval of <see cref="T:BosonWare.TerminalApp.ICommand" /> instances
+                by their names or aliases. Supports case-insensitive command name matching.
+            </summary>
+        </member>
+        <member name="M:BosonWare.TerminalApp.CommandRegistry.LoadCommands``1(System.Type[])">
+            <summary>
+                Loads command types from the specified assemblies and registers them in the <c>Commands</c> dictionary.
+                Each command type must be decorated with a <see cref="T:BosonWare.TerminalApp.CommandAttribute" /> and implement <see cref="T:BosonWare.TerminalApp.ICommand" />.
+                The method also registers command aliases defined in the <see cref="T:BosonWare.TerminalApp.CommandAttribute" />.
+            </summary>
+            <typeparam name="AssemblyMarker">
+                A marker type used to identify the primary assembly to scan for command types.
+            </typeparam>
+            <param name="assemblyMarkers">
+                An array of marker types whose assemblies will also be scanned for command types.
+            </param>
+        </member>
+        <member name="T:BosonWare.TerminalApp.ConsoleApplication">
+            <summary>
+                Represents a console application that manages commands, command history, and user interaction via a terminal
+                interface.
+            </summary>
+        </member>
+        <member name="F:BosonWare.TerminalApp.ConsoleApplication._commands">
+            <summary>
+                Stores the registered minimal commands by their names.
+            </summary>
+        </member>
+        <member name="F:BosonWare.TerminalApp.ConsoleApplication._isRunning">
+            <summary>
+                Indicates whether the application is currently running.
+            </summary>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.#ctor(System.String)">
+            <summary>
+                Initializes a new instance of the <see cref="T:BosonWare.TerminalApp.ConsoleApplication" /> class with the specified prompt.
+            </summary>
+            <param name="prompt">The prompt string to display to the user.</param>
+        </member>
+        <member name="P:BosonWare.TerminalApp.ConsoleApplication.Current">
+            <summary>
+                Gets the current instance of the <see cref="T:BosonWare.TerminalApp.ConsoleApplication" />.
+            </summary>
+        </member>
+        <member name="P:BosonWare.TerminalApp.ConsoleApplication.History">
+            <summary>
+                Gets or sets the command history for the application.
+            </summary>
+        </member>
+        <member name="P:BosonWare.TerminalApp.ConsoleApplication.Prompt">
+            <summary>
+                Gets or sets the prompt string displayed to the user.
+            </summary>
+        </member>
+        <member name="P:BosonWare.TerminalApp.ConsoleApplication.IsRunning">
+            <summary>
+                Indicates whether the application is currently running.
+            </summary>
+        </member>
+        <member name="P:BosonWare.TerminalApp.ConsoleApplication.MinimalCommands">
+            <summary>
+                Gets an enumerable collection of all minimal commands registered in the application.
+            </summary>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.Exit">
+            <summary>
+                Signals the application to terminate by setting the running flag to false.
+            </summary>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.AddCommand(System.String,System.Func{System.String,System.Threading.Tasks.Task},System.String)">
+            <summary>
+                Adds a minimal command with the specified name, action, and optional description.
+            </summary>
+            <param name="name">The name of the command.</param>
+            <param name="action">The action to execute when the command is invoked.</param>
+            <param name="description">The description of the command.</param>
+            <returns>The created <see cref="T:BosonWare.TerminalApp.MinimalCommand" /> instance.</returns>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.AddCommand(System.String,System.Action{System.String},System.String)">
+            <summary>
+                Adds a minimal command with the specified name, action, and optional description.
+            </summary>
+            <param name="name">The name of the command.</param>
+            <param name="action">The action to execute when the command is invoked.</param>
+            <param name="description">The description of the command.</param>
+            <returns>The created <see cref="T:BosonWare.TerminalApp.MinimalCommand" /> instance.</returns>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.AddCommand``1(System.String,System.Func{``0,System.Threading.Tasks.Task},System.String)">
+            <summary>
+                Adds a minimal command with options, specifying the name, action, and optional description.
+            </summary>
+            <typeparam name="TOptions">The type of options for the command.</typeparam>
+            <param name="name">The name of the command.</param>
+            <param name="action">The action to execute when the command is invoked.</param>
+            <param name="description">The description of the command.</param>
+            <returns>The created <see cref="T:BosonWare.TerminalApp.MinimalCommand`1" /> instance.</returns>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.AddCommand``1(System.String,System.Action{``0},System.String)">
+            <summary>
+                Adds a minimal command with options, specifying the name, action, and optional description.
+            </summary>
+            <typeparam name="TOptions">The type of options for the command.</typeparam>
+            <param name="name">The name of the command.</param>
+            <param name="action">The action to execute when the command is invoked.</param>
+            <param name="description">The description of the command.</param>
+            <returns>The created <see cref="T:BosonWare.TerminalApp.MinimalCommand`1" /> instance.</returns>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.HandleCancelKeyPress(System.Object,System.ConsoleCancelEventArgs)">
+            <summary>
+                Handles the <c>Ctrl+C</c> key press event to prevent application termination.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.RunAsync">
+            <summary>
+                Runs the console application asynchronously, processing user input and executing commands.
+            </summary>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.ExecCommand(System.String)">
+            <summary>
+                Executes a user command asynchronously and returns the execution status.
+            </summary>
+            <param name="userCommand">The user command string to execute.</param>
+            <returns>
+                <c>true</c> if the command executed successfully; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:BosonWare.TerminalApp.ConsoleApplication.CreateAsync(System.String)">
+            <summary>
+                Creates a new instance of <see cref="T:BosonWare.TerminalApp.ConsoleApplication" /> asynchronously with the specified prompt.
+            </summary>
+            <param name="prompt">The prompt string to display to the user. Defaults to "Console".</param>
+            <returns>
+                A task representing the asynchronous operation, with the created <see cref="T:BosonWare.TerminalApp.ConsoleApplication" /> instance as
+                the result.
+            </returns>
+        </member>
+        <member name="T:BosonWare.TerminalApp.IMinimalCommand">
+            <summary>
+                Represents a minimal command with a name and description.
+                Inherits from <see cref="T:BosonWare.TerminalApp.ICommand" />.
+            </summary>
+            <remarks>
+                Implement this interface to define a command with basic metadata.
+            </remarks>
+            <property name="Name">
+                Gets the name of the command.
+            </property>
+            <property name="Description">
+                Gets the description of the command.
+            </property>
+        </member>
+        <member name="T:BosonWare.TerminalApp.MinimalCommand">
+            <summary>
+                Represents a minimal command with a name, description, and an execution action.
+            </summary>
+            <param name="name">The name of the command.</param>
+            <param name="description">The description of the command.</param>
+            <param name="execute">The action to execute when the command is invoked, accepting a string argument.</param>
+        </member>
+        <member name="M:BosonWare.TerminalApp.MinimalCommand.#ctor(System.String,System.String,System.Func{System.String,System.Threading.Tasks.Task})">
+            <summary>
+                Represents a minimal command with a name, description, and an execution action.
+            </summary>
+            <param name="name">The name of the command.</param>
+            <param name="description">The description of the command.</param>
+            <param name="execute">The action to execute when the command is invoked, accepting a string argument.</param>
+        </member>
+        <member name="M:BosonWare.TerminalApp.MinimalCommand.AddDescription(System.String)">
+            <summary>
+                Sets the description for the <see cref="T:BosonWare.TerminalApp.MinimalCommand" /> instance.
+            </summary>
+            <param name="description">
+                The description text to assign. Cannot be <c>null</c>.
+            </param>
+            <returns>
+                The current <see cref="T:BosonWare.TerminalApp.MinimalCommand" /> instance with the updated description.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+                Thrown when <paramref name="description" /> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:BosonWare.TerminalApp.MinimalCommand`1">
+            <summary>
+                Represents a minimal command with a name, description, and an execution action.
+            </summary>
+            <param name="name">The name of the command.</param>
+            <param name="description">The description of the command.</param>
+            <param name="execute">The action to execute when the command is invoked, accepting a string argument.</param>
+        </member>
+        <member name="M:BosonWare.TerminalApp.MinimalCommand`1.#ctor(System.String,System.String,System.Func{`0,System.Threading.Tasks.Task})">
+            <summary>
+                Represents a minimal command with a name, description, and an execution action.
+            </summary>
+            <param name="name">The name of the command.</param>
+            <param name="description">The description of the command.</param>
+            <param name="execute">The action to execute when the command is invoked, accepting a string argument.</param>
+        </member>
+        <member name="M:BosonWare.TerminalApp.MinimalCommand`1.AddDescription(System.String)">
+            <summary>
+                Sets the description for the <see cref="T:BosonWare.TerminalApp.MinimalCommand" /> instance.
+            </summary>
+            <param name="description">
+                The description text to assign. Cannot be <c>null</c>.
+            </param>
+            <returns>
+                The current <see cref="T:BosonWare.TerminalApp.MinimalCommand" /> instance with the updated description.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">
+                Thrown when <paramref name="description" /> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="F:BosonWare.TerminalApp.TerminationMode.TerminateOnCtrlC">
+            <summary>
+                The application will terminate when the user presses <c>Ctrl+C</c>.
+            </summary>
+        </member>
+        <member name="F:BosonWare.TerminalApp.TerminationMode.IgnoreCtrlC">
+            <summary>
+                The application will not terminate on <c>Ctrl+C</c> and will continue running.
+            </summary>
+        </member>
+    </members>
+</doc>

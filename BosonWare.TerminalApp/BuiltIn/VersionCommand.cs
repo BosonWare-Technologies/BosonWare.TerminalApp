@@ -3,10 +3,10 @@
 namespace BosonWare.TerminalApp.BuiltIn;
 
 /// <summary>
-/// Represents a command that displays the current application version in the terminal.
+///     Represents a command that displays the current application version in the terminal.
 /// </summary>
 /// <remarks>
-/// This command can be invoked using "version" or its alias "ver".
+///     This command can be invoked using "version" or its alias "ver".
 /// </remarks>
 [Command("version", Aliases = ["ver"], Description = "Display the current version")]
 public sealed class VersionCommand : ICommand

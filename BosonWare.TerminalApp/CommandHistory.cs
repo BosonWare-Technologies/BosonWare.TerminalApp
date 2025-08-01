@@ -10,7 +10,7 @@ public sealed class CommandHistory
 
     public async Task AddEntry(string command)
     {
-        int index = History.IndexOf(command);
+        var index = History.IndexOf(command);
 
         if (index > 0) {
             History.RemoveAt(index);
@@ -29,11 +29,11 @@ public sealed class CommandHistory
 
     public static async Task<CommandHistory> CreateAsync(string path)
     {
-        var history = await PersistentList<string>.CreateAsync(path, (location) => {
+        var history = await PersistentList<string>.CreateAsync(path, location => {
             return new PersistentList<string>(location);
         });
 
-        return new CommandHistory() {
+        return new CommandHistory {
             History = history
         };
     }

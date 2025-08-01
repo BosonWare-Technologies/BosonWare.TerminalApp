@@ -1,35 +1,47 @@
 ﻿using BosonWare.TUI;
-using CommandInfo = (string CommandName, string Description, string[] Aliases);
 
 namespace BosonWare.TerminalApp.BuiltIn;
 
 [Command("help", Aliases = ["info", "-h", "?"], Description = "Displays help")]
 public sealed class HelpCommand : ICommand
 {
-    public static List<CommandInfo> GetCommands()
-    {
-        List<CommandInfo> commands = [];
-        
-        commands.AddRange(CommandRegistry.Commands.Values.DistinctBy(x => x.Attribute.Name)
-            .OrderBy(x => x.Attribute.Name)
-            .Select(registryCommand => (registryCommand.Attribute.Name, registryCommand.Attribute.Description, registryCommand.Attribute.Aliases)));
-
-        commands.AddRange(ConsoleApplication.Current.MinimalCommands
-            .Select(minimalCommand => (CommandInfo)(minimalCommand.Name, minimalCommand.Description, [])));
-
-        return commands;
-    }
-    
+    /// <inheritdoc />
     public async Task Execute(string arguments)
     {
-        var commands = GetCommands();
-        
-        SmartConsole.WriteLine(Application.PrettyName, ConsoleColor.Green);
+        var commands = GetCommands(arguments);
 
+        await PrintCommands(commands);
+    }
+
+    public static ICollection<RegisteredCommand> GetCommands(string groupName)
+    {
+        if (string.IsNullOrEmpty(groupName)) {
+            List<RegisteredCommand> commands = [];
+
+            commands.AddRange(CommandRegistry.Commands.Values.DistinctBy(x => x.Name)
+                .OrderBy(x => x.Name));
+
+            commands.AddRange(ConsoleApplication.Current.MinimalCommands
+                .Select(minimalCommand => new RegisteredCommand(minimalCommand, minimalCommand.Name, minimalCommand.Description)));
+
+            return commands;
+        }
+
+        var group = CommandRegistry.Groups
+            .FirstOrDefault(x => x.Name.Equals(groupName, StringComparison.InvariantCultureIgnoreCase));
+
+        if (group is null) {
+            throw new ArgumentException($"Unknown group: {groupName}");
+        }
+
+        return ((CommandGroup)group.Command).Commands.Values;
+    }
+
+    public static async Task PrintCommands(ICollection<RegisteredCommand> commands)
+    {
         SmartConsole.WriteLine("\r\nCommands:");
-        foreach (var (name, description, aliases) in commands)
-        {
-            var longestName = commands.Select(x => x.CommandName.Length).Max();
+        foreach (var (_, name, description, aliases) in commands) {
+            var longestName = commands.Select(x => x.Name.Length).Max();
 
             var commandDescription = $"{(description.EndsWith('.') ? description : description + ".")}";
 
@@ -38,9 +50,8 @@ public sealed class HelpCommand : ICommand
                 : commandDescription;
 
             var padding = "    ";
-            
-            if (name.Length < longestName)
-            {
+
+            if (name.Length < longestName) {
                 for (var i = 0; i < longestName - name.Length; i++) padding += " ";
             }
 

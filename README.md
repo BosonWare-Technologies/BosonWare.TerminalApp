@@ -1,6 +1,8 @@
 # BosonWare.TerminalApp
 
-BosonWare.TerminalApp is a modern, extensible .NET terminal application framework designed to simplify the creation of interactive command-line tools. It provides a robust command registry, built-in commands, command history, and flexible parsing utilities, making it ideal for building rich terminal experiences.
+BosonWare.TerminalApp is a modern, extensible .NET terminal application framework designed to simplify the creation of
+interactive command-line tools. It provides a robust command registry, built-in commands, command history, and flexible
+parsing utilities, making it ideal for building rich terminal experiences.
 
 ## Features
 
@@ -97,7 +99,8 @@ MIT License. See [LICENSE](./LICENSE) for details.
 
 ## Contributing
 
-Contributions are welcome! Please submit issues or pull requests via [GitHub](https://github.com/BosonWare-Technologies/BosonWare.TerminalApp).
+Contributions are welcome! Please submit issues or pull requests
+via [GitHub](https://github.com/BosonWare-Technologies/BosonWare.TerminalApp).
 
 ## Links
 

@@ -4,73 +4,75 @@ using BosonWare.TUI;
 namespace BosonWare.TerminalApp;
 
 /// <summary>
-/// Represents a console application that manages commands, command history, and user interaction via a terminal interface.
+///     Represents a console application that manages commands, command history, and user interaction via a terminal
+///     interface.
 /// </summary>
 public sealed class ConsoleApplication
 {
     /// <summary>
-    /// Gets the current instance of the <see cref="ConsoleApplication"/>.
-    /// </summary>
-    public static ConsoleApplication Current { get; private set; } = null!;
-
-    /// <summary>
-    /// Stores the registered minimal commands by their names.
+    ///     Stores the registered minimal commands by their names.
     /// </summary>
     private readonly Dictionary<string, IMinimalCommand> _commands = [];
 
     /// <summary>
-    /// Indicates whether the application is currently running.
+    ///     Indicates whether the application is currently running.
     /// </summary>
     private volatile bool _isRunning;
 
-    public TerminationMode TerminationMode { get; set; } = TerminationMode.TerminateOnCtrlC;
-
     /// <summary>
-    /// Gets or sets the command history for the application.
-    /// </summary>
-    public required CommandHistory History { get; init; }
-
-    /// <summary>
-    /// Gets or sets the prompt string displayed to the user.
-    /// </summary>
-    public string Prompt { get; set; } = "";
-
-    /// <summary>
-    /// Indicates whether the application is currently running.
-    /// </summary>
-    public bool IsRunning => _isRunning;
-
-    /// <summary>
-    /// Gets an enumerable collection of all minimal commands registered in the application.
-    /// </summary>
-    public IEnumerable<IMinimalCommand> MinimalCommands => _commands.Values;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ConsoleApplication"/> class with the specified prompt.
+    ///     Initializes a new instance of the <see cref="ConsoleApplication" /> class with the specified prompt.
     /// </summary>
     /// <param name="prompt">The prompt string to display to the user.</param>
     public ConsoleApplication(string prompt)
     {
         Prompt = prompt;
-
-        Current = this;
     }
-    
+
+    /// <summary>
+    ///     Gets the current instance of the <see cref="ConsoleApplication" />.
+    /// </summary>
+    public static ConsoleApplication Current { get; private set; } = null!;
+
+    public TerminationMode TerminationMode { get; set; } = TerminationMode.TerminateOnCtrlC;
+
+    /// <summary>
+    ///     Gets or sets the command history for the application.
+    /// </summary>
+    public required CommandHistory History { get; init; }
+
+    /// <summary>
+    ///     Gets or sets the prompt string displayed to the user.
+    /// </summary>
+    public string Prompt { get; set; } = "";
+
+    /// <summary>
+    ///     Indicates whether the application is currently running.
+    /// </summary>
+    public bool IsRunning => _isRunning;
+
+    /// <summary>
+    ///     Gets an enumerable collection of all minimal commands registered in the application.
+    /// </summary>
+    public IEnumerable<IMinimalCommand> MinimalCommands => _commands.Values;
+
+    /// <summary>
+    ///     Signals the application to terminate by setting the running flag to false.
+    /// </summary>
     public void Exit()
     {
         _isRunning = false;
     }
-    
+
     /// <summary>
-    /// Adds a minimal command with the specified name, action, and optional description.
+    ///     Adds a minimal command with the specified name, action, and optional description.
     /// </summary>
     /// <param name="name">The name of the command.</param>
     /// <param name="action">The action to execute when the command is invoked.</param>
     /// <param name="description">The description of the command.</param>
-    /// <returns>The created <see cref="MinimalCommand"/> instance.</returns>
+    /// <returns>The created <see cref="MinimalCommand" /> instance.</returns>
     public MinimalCommand AddCommand(
-        string name, 
-        Func<string, Task> action, 
+        string name,
+        Func<string, Task> action,
         string description = "")
     {
         var command = new MinimalCommand(name, description, action);
@@ -81,18 +83,18 @@ public sealed class ConsoleApplication
     }
 
     /// <summary>
-    /// Adds a minimal command with the specified name, action, and optional description.
+    ///     Adds a minimal command with the specified name, action, and optional description.
     /// </summary>
     /// <param name="name">The name of the command.</param>
     /// <param name="action">The action to execute when the command is invoked.</param>
     /// <param name="description">The description of the command.</param>
-    /// <returns>The created <see cref="MinimalCommand"/> instance.</returns>
+    /// <returns>The created <see cref="MinimalCommand" /> instance.</returns>
     public MinimalCommand AddCommand(
-        string name, 
-        Action<string> action, 
+        string name,
+        Action<string> action,
         string description = "")
     {
-        var command = new MinimalCommand(name, description, (args) => {
+        var command = new MinimalCommand(name, description, args => {
             return Task.Run(() => action(args));
         });
 
@@ -101,18 +103,18 @@ public sealed class ConsoleApplication
         return command;
     }
 
-    
+
     /// <summary>
-    /// Adds a minimal command with options, specifying the name, action, and optional description.
+    ///     Adds a minimal command with options, specifying the name, action, and optional description.
     /// </summary>
     /// <typeparam name="TOptions">The type of options for the command.</typeparam>
     /// <param name="name">The name of the command.</param>
     /// <param name="action">The action to execute when the command is invoked.</param>
     /// <param name="description">The description of the command.</param>
-    /// <returns>The created <see cref="MinimalCommand{TOptions}"/> instance.</returns>
+    /// <returns>The created <see cref="MinimalCommand{TOptions}" /> instance.</returns>
     public MinimalCommand<TOptions> AddCommand<TOptions>(
-        string name, 
-        Func<TOptions, Task> action, 
+        string name,
+        Func<TOptions, Task> action,
         string description = "")
     {
         var command = new MinimalCommand<TOptions>(name, description, action);
@@ -122,23 +124,23 @@ public sealed class ConsoleApplication
         return command;
     }
 
-    
+
     /// <summary>
-    /// Adds a minimal command with options, specifying the name, action, and optional description.
+    ///     Adds a minimal command with options, specifying the name, action, and optional description.
     /// </summary>
     /// <typeparam name="TOptions">The type of options for the command.</typeparam>
     /// <param name="name">The name of the command.</param>
     /// <param name="action">The action to execute when the command is invoked.</param>
     /// <param name="description">The description of the command.</param>
-    /// <returns>The created <see cref="MinimalCommand{TOptions}"/> instance.</returns>
+    /// <returns>The created <see cref="MinimalCommand{TOptions}" /> instance.</returns>
     public MinimalCommand<TOptions> AddCommand<TOptions>(
-        string name, 
-        Action<TOptions> action, 
+        string name,
+        Action<TOptions> action,
         string description = "")
     {
         var command = new MinimalCommand<TOptions>(
-            name, 
-            description, 
+            name,
+            description,
             args => Task.Run(() => action(args)));
 
         _commands.Add(name, command);
@@ -147,14 +149,14 @@ public sealed class ConsoleApplication
     }
 
     /// <summary>
-    /// Handles the <c>Ctrl+C</c> key press event to prevent application termination.
+    ///     Handles the <c>Ctrl+C</c> key press event to prevent application termination.
     /// </summary>
     /// <param name="sender">The event sender.</param>
     /// <param name="e">The event arguments.</param>
     private void HandleCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
     {
         e.Cancel = true; // Prevent the application from terminating.
-        
+
         if (TerminationMode.HasFlag(TerminationMode.TerminateOnCtrlC)) {
             _isRunning = false;
         }
@@ -164,12 +166,15 @@ public sealed class ConsoleApplication
     }
 
     /// <summary>
-    /// Runs the console application asynchronously, processing user input and executing commands.
+    ///     Runs the console application asynchronously, processing user input and executing commands.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task RunAsync()
     {
         _isRunning = true;
+
+        var previousApp = Current;
+        Current = this;
 
         Console.CancelKeyPress += HandleCancelKeyPress;
 
@@ -197,16 +202,17 @@ public sealed class ConsoleApplication
             }
         }
         finally {
+            Current = previousApp;
             Console.CancelKeyPress -= HandleCancelKeyPress;
         }
     }
 
     /// <summary>
-    /// Executes a user command asynchronously and returns the execution status.
+    ///     Executes a user command asynchronously and returns the execution status.
     /// </summary>
     /// <param name="userCommand">The user command string to execute.</param>
     /// <returns>
-    /// <c>true</c> if the command executed successfully; otherwise, <c>false</c>.
+    ///     <c>true</c> if the command executed successfully; otherwise, <c>false</c>.
     /// </returns>
     private async Task<bool> ExecCommand(string userCommand)
     {
@@ -253,10 +259,13 @@ public sealed class ConsoleApplication
     }
 
     /// <summary>
-    /// Creates a new instance of <see cref="ConsoleApplication"/> asynchronously with the specified prompt.
+    ///     Creates a new instance of <see cref="ConsoleApplication" /> asynchronously with the specified prompt.
     /// </summary>
     /// <param name="prompt">The prompt string to display to the user. Defaults to "Console".</param>
-    /// <returns>A task representing the asynchronous operation, with the created <see cref="ConsoleApplication"/> instance as the result.</returns>
+    /// <returns>
+    ///     A task representing the asynchronous operation, with the created <see cref="ConsoleApplication" /> instance as
+    ///     the result.
+    /// </returns>
     public static async Task<ConsoleApplication> CreateAsync(string prompt = "Console")
     {
         var path = Application.GetPath("history.json");
