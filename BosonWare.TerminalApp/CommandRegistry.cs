@@ -78,7 +78,7 @@ public static class CommandRegistry
             commandAttribute.Description,
             commandAttribute.Aliases);
 
-        if (type.GetCustomAttribute<GroupAttribute>() is { } commandGroup) {
+        if (type.GetCustomAttribute<GroupAttribute>(inherit: true) is { } commandGroup) {
             CommandGroup? group;
             if (!Commands.TryGetValue(commandGroup.Name, out var groupInfo)) {
                 group = new CommandGroup();
