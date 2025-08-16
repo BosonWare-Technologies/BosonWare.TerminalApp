@@ -2,6 +2,9 @@
 
 namespace BosonWare.TerminalApp.BuiltIn;
 
+/// <summary>
+/// 
+/// </summary>
 [Command("help", Aliases = ["info", "-h", "?"], Description = "Displays help")]
 public sealed class HelpCommand : ICommand
 {

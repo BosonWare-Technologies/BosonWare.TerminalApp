@@ -1,16 +1,22 @@
 ﻿using System.Reflection;
 using BosonWare.Compares;
 using BosonWare.TUI;
+using JetBrains.Annotations;
 
 namespace BosonWare.TerminalApp;
 
+[PublicAPI]
 public record RegisteredCommand(
     ICommand Command,
     string Name,
     string Description,
     string[]? Aliases = null)
 {
-    public void Deconstruct(out ICommand command, out string name, out string description, out string[] aliases)
+    public void Deconstruct(
+        out ICommand command, 
+        out string name, 
+        out string description, 
+        out string[] aliases)
     {
         command = Command;
         name = Name;
@@ -23,6 +29,7 @@ public record RegisteredCommand(
 ///     Provides a registry for commands, allowing registration and retrieval of <see cref="ICommand" /> instances
 ///     by their names or aliases. Supports case-insensitive command name matching.
 /// </summary>
+[PublicAPI]
 public static class CommandRegistry
 {
     public static Dictionary<string, RegisteredCommand> Commands { get; }
@@ -93,6 +100,10 @@ public static class CommandRegistry
 
             group.Commands.Add(registeredCommand.Name, registeredCommand);
 
+            foreach (var alias in commandAttribute.Aliases) {
+                group.Commands[alias] = registeredCommand;
+            }
+            
             return;
         }
 

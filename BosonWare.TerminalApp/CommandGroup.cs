@@ -12,9 +12,7 @@ public class CommandGroup : ICommand
     public Task Execute(string arguments)
     {
         if (string.IsNullOrWhiteSpace(arguments)) {
-            HelpCommand.PrintCommands(Commands.Values);
-
-            return Task.CompletedTask;
+            return HelpCommand.PrintCommands(Commands.Values);
         }
 
         var (name, args) = CommandLineParser.Parse(arguments);

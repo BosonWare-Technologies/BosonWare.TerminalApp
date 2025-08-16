@@ -1,5 +1,6 @@
 using BosonWare.TUI;
 using CommandLine;
+using JetBrains.Annotations;
 
 namespace BosonWare.TerminalApp;
 
@@ -7,6 +8,7 @@ namespace BosonWare.TerminalApp;
 ///     Represents an abstract base class for commands with typed options.
 /// </summary>
 /// <typeparam name="TOptions">The type of options to be parsed and passed to the command.</typeparam>
+[PublicAPI]
 public abstract class Command<TOptions> : ICommand
 {
     /// <summary>

@@ -11,11 +11,13 @@
         <Authors>Realtin (CodingBoson)</Authors>
         <Company>BosonWare, Technologies</Company>
 
-        <Version>2.0.0</Version>
+        <Version>2.1.0</Version>
         <Copyright>BosonWare, Technologies</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
 
+        <PackageTags>terminal console app library commandline</PackageTags>
+        
         <PackageProjectUrl>
             https://github.com/BosonWare-Technologies/BosonWare.TerminalApp
         </PackageProjectUrl>
@@ -24,15 +26,12 @@
         </RepositoryUrl>
 
         <PackageReleaseNotes>
-            Features:
-            - Added Command Groups.
-            - Added HelpCommand.PrintCommands.
-
-            Improvements:
-            - Improved CommandRegistry with RegisteredCommand.
-
-            Bug Fixes:
-            - Fix Issue when running nested apps.
+            Fixed command aliases in command groups.
+            
+            Added interface support for `GroupAttribute`.
+            Added JetBrains annotations.
+            
+            Note: This version contains no breaking changes.
         </PackageReleaseNotes>
     </PropertyGroup>
 
