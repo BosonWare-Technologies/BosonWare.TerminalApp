@@ -11,7 +11,7 @@
         <Authors>Realtin (CodingBoson)</Authors>
         <Company>BosonWare, Technologies</Company>
 
-        <Version>2.2.0</Version>
+        <Version>2.2.1</Version>
         <Copyright>BosonWare, Technologies</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -26,7 +26,7 @@
         </RepositoryUrl>
 
         <PackageReleaseNotes>
-            Set "inherit: true" for "GroupAttribute".
+            Added support for `GroupAttribute` on interfaces.
         </PackageReleaseNotes>
     </PropertyGroup>
 

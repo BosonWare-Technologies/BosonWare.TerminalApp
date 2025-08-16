@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using BosonWare.Compares;
+using BosonWare.TerminalApp.Internal;
 using BosonWare.TUI;
 using JetBrains.Annotations;
 
@@ -78,7 +79,7 @@ public static class CommandRegistry
             commandAttribute.Description,
             commandAttribute.Aliases);
 
-        if (type.GetCustomAttribute<GroupAttribute>(inherit: true) is { } commandGroup) {
+        if (type.GetAttribute<GroupAttribute>() is { } commandGroup) {
             CommandGroup? group;
             if (!Commands.TryGetValue(commandGroup.Name, out var groupInfo)) {
                 group = new CommandGroup();
